@@ -5,23 +5,22 @@ const app = connect();
 
 function calculate(req, res) {
   const parsedUrl = url.parse(req.url, true);
-  const query = parsedUrl.query;
 
-  // Allow only /lab2 path
-  if (parsedUrl.pathname !== '/lab2') {
+  // Check if the path is exactly '/lab3'
+  if (parsedUrl.pathname !== '/lab3') {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('Page not found');
     return;
   }
 
+  const query = parsedUrl.query;
   const method = query.method;
   const x = parseFloat(query.x);
   const y = parseFloat(query.y);
 
-  // Check if x and y are valid numbers
   if (isNaN(x) || isNaN(y)) {
     res.writeHead(400, { 'Content-Type': 'text/plain' });
-    res.end('Invalid numbers for x or y');
+    res.end('Please provide valid numbers for x and y');
     return;
   }
 
@@ -61,8 +60,8 @@ function calculate(req, res) {
   res.end(output);
 }
 
-app.use('/lab2', calculate);
+app.use('/lab3', calculate);
 
 app.listen(3000, () => {
-  console.log('Server is running at http://localhost:3000/lab2');
+  console.log('Server is running at http://localhost:3000/lab3');
 });
