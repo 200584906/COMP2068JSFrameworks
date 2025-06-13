@@ -1,67 +1,61 @@
 const connect = require('connect');
 const url = require('url');
 
-const app = connect();
+// Math calculation handler function
+function handleCalculationRequest(req, res) {
+    // Parse the URL and extract query parameters
+    const queryParams = url.parse(req.url, true).query;
+    const operation = queryParams.method; // operation type (add, subtract, etc.)
+    const num1 = parseFloat(queryParams.x); // first number
+    const num2 = parseFloat(queryParams.y); // second number
 
-function calculate(req, res) {
-  const parsedUrl = url.parse(req.url, true);
+    let result;       // to store the final calculation result
+    let operator;     // to store the mathematical symbol
 
-  // Check if the path is exactly '/lab3'
-  if (parsedUrl.pathname !== '/lab3') {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('Page not found');
-    return;
-  }
-
-  const query = parsedUrl.query;
-  const method = query.method;
-  const x = parseFloat(query.x);
-  const y = parseFloat(query.y);
-
-  if (isNaN(x) || isNaN(y)) {
-    res.writeHead(400, { 'Content-Type': 'text/plain' });
-    res.end('Please provide valid numbers for x and y');
-    return;
-  }
-
-  let result;
-  let symbol;
-
-  switch (method) {
-    case 'add':
-      result = x + y;
-      symbol = '+';
-      break;
-    case 'subtract':
-      result = x - y;
-      symbol = '-';
-      break;
-    case 'multiply':
-      result = x * y;
-      symbol = '*';
-      break;
-    case 'divide':
-      if (y === 0) {
-        res.writeHead(400, { 'Content-Type': 'text/plain' });
-        res.end('Cannot divide by zero');
+    // Check if input values are valid numbers
+    if (isNaN(num1) || isNaN(num2)) {
+        res.end("Error: x and y must be valid numbers.");
         return;
-      }
-      result = x / y;
-      symbol = '/';
-      break;
-    default:
-      res.writeHead(400, { 'Content-Type': 'text/plain' });
-      res.end('Invalid method. Use add, subtract, multiply, or divide');
-      return;
-  }
+    }
 
-  const output = `${x} ${symbol} ${y} = ${result}`;
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end(output);
+    // Perform operation based on the "method" parameter
+    switch (operation) {
+        case 'add':
+            result = num1 + num2;
+            operator = '+';
+            break;
+        case 'subtract':
+            result = num1 - num2;
+            operator = '-';
+            break;
+        case 'multiply':
+            result = num1 * num2;
+            operator = '*';
+            break;
+        case 'divide':
+            if (num2 === 0) {
+                res.end("Error: Division by zero.");
+                return;
+            }
+            result = num1 / num2;
+            operator = '/';
+            break;
+        default:
+            res.end("Error: Invalid method. Use add, subtract, multiply, or divide.");
+            return;
+    }
+
+    // Return the result as a formatted string
+    res.end(`${num1} ${operator} ${num2} = ${result}`);
 }
 
-app.use('/lab3', calculate);
+// Create a Connect app instance
+const app = connect();
 
+// Register middleware to handle requests at the /LAB03 endpoint
+app.use('/LAB03', handleCalculationRequest);
+
+// Start the server on port 3000
 app.listen(3000, () => {
-  console.log('Server is running at http://localhost:3000/lab3');
+    console.log('Server running at http://localhost:3000/LAB03');
 });
