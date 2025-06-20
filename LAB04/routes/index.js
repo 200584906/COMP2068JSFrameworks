@@ -1,20 +1,29 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function(req, res) {
-  res.render('index', { title: 'My Favorite Actors' });
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express' });
 });
 
-router.get('/leo', function(req, res) {
-  res.render('leo');
+module.exports = router;
+var express = require('express');
+var router = express.Router();
+
+router.get('/', function(req, res) {
+  res.render('index', { title: 'Favorite Actors' });
+});
+
+router.get('/robert', function(req, res) {
+  res.render('robert');
 });
 
 router.get('/emma', function(req, res) {
   res.render('emma');
 });
 
-router.get('/tom', function(req, res) {
-  res.render('tom');
+router.get('/leo', function(req, res) {
+  res.render('leo');
 });
 
 router.get('/zendaya', function(req, res) {
